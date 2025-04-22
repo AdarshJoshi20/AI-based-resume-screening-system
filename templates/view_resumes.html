@@ -1,0 +1,32 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Matched Resumes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+  
+  <body>
+    <div class="header"> ... </div>
+  
+    <div class="container">
+      {% if resumes %}
+        <table> ... </table>
+      {% else %}
+        <p style="text-align:center; font-size:1.2rem;">No resumes found.</p>
+      {% endif %}
+      <a href="/" class="btn-back">← Go Back</a>
+    </div>
+  
+    <div class="footer"> ... </div>
+  
+    <script>
+      document.addEventListener('input', function (e) {
+        if (e.target.tagName.toLowerCase() === 'textarea') {
+          e.target.style.height = 'auto';
+          e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+      });
+    </script>
+  </body>
+  

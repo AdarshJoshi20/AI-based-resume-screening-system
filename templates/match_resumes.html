@@ -1,0 +1,46 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Radar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  </head>
+  
+  <body>
+    <div class="navbar"> ... </div>
+  
+    <div class="container">
+      <div class="logo"> ... </div>
+      <h2>Upload Resumes and Job Description</h2>
+  
+      {% if message %}
+        <div class="message">{{ message }}</div>
+      {% endif %}
+  
+      <form action="/matchresume" method="post" enctype="multipart/form-data">
+        <label>Upload Resumes:</label>
+        <input type="file" name="resumes" accept=".pdf,.doc,.docx" multiple required>
+  
+        <label>Enter Job Description:</label>
+        <textarea name="jd" required></textarea>
+  
+        <button type="submit">Match Resumes</button>
+      </form>
+  
+      {% if resumes %}
+        <a href="{{ url_for('view_resume') }}" class="view-resume-btn">View Resumes</a>
+      {% endif %}
+    </div>
+  
+    <footer class="footer"> ... </footer>
+  
+    <script>
+      document.addEventListener('input', function (e) {
+        if (e.target.tagName.toLowerCase() === 'textarea') {
+          e.target.style.height = 'auto';
+          e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+      });
+    </script>
+  </body>
+  

@@ -1,0 +1,273 @@
+/* 🌐 General Body */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2C3E50;
+    color: #fff;
+    animation: fadeIn 1s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* 🔝 Navbar */
+  .navbar {
+    background-color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .navbar img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .navbar .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  .navbar a:hover {
+    color: #8B4513;
+    transition: 0.3s;
+  }
+  
+  /* 🖼️ Banner */
+  .banner {
+    width: 100%;
+    height: 320px;
+    background-image: url("{{ url_for('static', filename='images/banner.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  }
+  
+  .banner h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  /* 📦 Container */
+  .container {
+    max-width: 1200px;
+    justify-content: center;
+    margin: 40px auto;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 10px;
+    padding: 40px;
+    animation: slideUp 1.5s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+  
+  /* 📝 Form Inputs */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  textarea, input[type="file"], input[type="number"] {
+    padding: 15px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    resize: none;
+  }
+  
+  /* ☑️ Message */
+  .message {
+    text-align: center;
+    font-size: 1.1rem;
+    margin: 20px 0;
+    color: #f5f5dc;
+  }
+  
+  /* 🎯 Button Base */
+  .btn, .upload-btn, .back-btn {
+    display: block;
+    width: 180px;
+    margin: 30px auto 0;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* 🧈 Default Button */
+  .btn {
+    background-color: #f5f5dc;
+    color: #000;
+  }
+  
+  .btn:hover {
+    background-color: #8B4513;
+    color: #fff;
+  }
+  
+  /* 🟩 Upload Button */
+  .upload-btn {
+    background-color: greenyellow;
+    color: black;
+  }
+  
+  .upload-btn:hover {
+    background-color: #8B4513;
+    color: white;
+  }
+  
+  /* 🟣 Back Button */
+  .back-btn {
+    background-color: purple;
+    color: white;
+  }
+  
+  .back-btn:hover {
+    background-color: #6a0dad;
+    color: #fff;
+  }
+  
+  /* 📊 Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #2c3e50;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #34495e;
+  }
+  
+  tr:hover {
+    background-color: #8B4513;
+    color: #fff;
+    transition: 0.3s ease;
+  }
+  
+  /* ⚙️ Footer */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #34495e;
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  /* 🧃 Icons */
+  .icon-container {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+  }
+  
+  .icon-container img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+  }
+  
+  .icon-container img:hover {
+    transform: scale(1.1);
+  }
+  
+  /* 👤 About Page Specific Enhancements */
+  body.about-page {
+    background-color: #1a1a1a;
+    color: #f5f5dc;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .navbar h1 {
+    font-size: 1.8rem; /* override only for about page */
+    color: #f5f5dc;
+    margin: 0;
+  }
+  
+  /* Contributors Section */
+  .contributors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    text-align: center;
+  }
+  
+  .contributors li {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    list-style: none;
+    transition: background-color 0.3s;
+  }
+  
+  .contributors li:hover {
+    background-color: #8B4513;
+    color: #fff;
+  }
+
+  .message {
+    text-align: center;
+    font-size: 1.1rem;
+    margin: 20px 0;
+    color: #f5f5dc;
+    min-height: 24px; /* ✅ ensures space is always there */
+}

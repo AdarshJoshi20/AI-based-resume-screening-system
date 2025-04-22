@@ -1,0 +1,103 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Matcher Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+            <h1>ResumeRadar</h1>
+        </div>
+        <div>
+            <a href="/view_resumes">View Resumes</a>
+            <a href="/about">About</a>
+        </div>
+    </div>
+    <div class="banner" style="background-image: url('{{ url_for('static', filename='images/banner.jpg') }}');">
+        <!-- <h1>Smart Hiring Starts Here: AI Resume Matching Made Simple</h1> You can change this tagline -->
+    </div>
+
+    <div class="container">
+        <h2>Upload Resumes and Match to Job Description</h2>
+
+
+
+        <form method="POST" enctype="multipart/form-data">
+            <textarea name="job_description" placeholder="Enter Job Description..." rows="5" required></textarea>
+            <label for="file-upload" class="btn upload-btn">Choose Resumes</label>
+            <input type="file" id="file-upload" name="resumes" multiple required hidden>
+            <input type="number" name="top_n" placeholder="Enter number of top resumes to display" min="1" max="20"
+                required>
+            <button class="btn" type="submit">Match Resumes</button>
+        </form>
+
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+
+        {% if file_errors %}
+            <div class="message">
+                <ul>
+                    {% for err in file_errors %}
+                    <li><strong>{{ err.filename }}:</strong> {{ err.error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+
+        {% if resumes %}
+        <h2>Top Matched Resumes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Similarity Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resume in resumes %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('static', filename='uploads/' + resume.filename) }}" target="_blank">
+                            {{ resume.filename }}
+                        </a>
+                    </td>
+                    <td>{{ resume.similarity_score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <!-- <div class="icon-container">
+        <img src="{{ url_for('static', filename='images/job.jpg') }}" alt="Job Icon 1">
+        <img src="{{ url_for('static', filename='images/promotion.jpg') }}" alt="Job Icon 2">
+        <img src="{{ url_for('static', filename='images/job-offer.jpg') }}" alt="Job Icon 3">
+    </div> -->
+    <div class="footer">
+        <p>&copy; 2025 ResumeRadar. All rights reserved.</p>
+    </div>
+
+    <script>
+        document.addEventListener('input', function (e) {
+            if (e.target.tagName.toLowerCase() === 'textarea') {
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById('file-upload').addEventListener('change', function () {
+            const msgBox = document.querySelector('.message');
+            if (msgBox) msgBox.innerHTML = '';
+        });
+    </script>
+
+</body>
