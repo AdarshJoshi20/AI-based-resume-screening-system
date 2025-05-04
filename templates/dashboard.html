@@ -29,7 +29,7 @@
         <form method="POST" enctype="multipart/form-data">
             <textarea name="job_description" placeholder="Enter Job Description..." rows="5" required></textarea>
             <label for="file-upload" class="btn upload-btn">Choose Resumes</label>
-            <input type="file" id="file-upload" name="resumes" multiple required hidden>
+            <input type="file" id="file-upload" name="resumes" multiple required hidden>Upload multiple resumes in .pdf, .docx or .txt format
             <input type="number" name="top_n" placeholder="Enter number of top resumes to display" min="1" max="20"
                 required>
             <button class="btn" type="submit">Match Resumes</button>
@@ -75,11 +75,151 @@
         {% endif %}
     </div>
 
-    <!-- <div class="icon-container">
-        <img src="{{ url_for('static', filename='images/job.jpg') }}" alt="Job Icon 1">
-        <img src="{{ url_for('static', filename='images/promotion.jpg') }}" alt="Job Icon 2">
-        <img src="{{ url_for('static', filename='images/job-offer.jpg') }}" alt="Job Icon 3">
-    </div> -->
+    {% if metrics %}
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <h4>Evaluation Results</h4>
+        </div>
+        <div class="card-body row">
+            <div class="col-md-6">
+                <h5>Key Metrics</h5>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Interpretation</th>
+                    </tr>
+                    <tr>
+                        <td>Perturbation Robustness</td>
+                        <td>{{ "%.2f"|format(metrics.perturbation_robustness) }}</td>
+                        <td>
+                            {% if metrics.perturbation_robustness > 0.8 %}
+                                Excellent robustness to missing information
+                            {% elif metrics.perturbation_robustness > 0.6 %}
+                                Good robustness to missing information
+                            {% elif metrics.perturbation_robustness > 0.4 %}
+                                Moderate robustness to missing information
+                            {% else %}
+                                Low robustness - sensitive to missing information
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Method Consistency</td>
+                        <td>{{ "%.2f"|format(metrics.method_consistency) }}</td>
+                        <td>
+                            {% if metrics.method_consistency > 0.8 %}
+                                Excellent consistency between ranking methods
+                            {% elif metrics.method_consistency > 0.6 %}
+                                Good consistency between ranking methods
+                            {% elif metrics.method_consistency > 0.4 %}
+                                Moderate consistency
+                            {% else %}
+                                Low consistency - methods disagree
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Keyword Coverage</td>
+                        <td>{{ "%.2f"|format(metrics.keyword_coverage) }}</td>
+                        <td>
+                            {% if metrics.keyword_coverage > 0.8 %}
+                                Excellent keyword coverage
+                            {% elif metrics.keyword_coverage > 0.6 %}
+                                Good keyword coverage
+                            {% elif metrics.keyword_coverage > 0.4 %}
+                                Moderate keyword coverage
+                            {% else %}
+                                Low keyword coverage
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>NDCG Score</td>
+                        <td>{{ "%.2f"|format(metrics.ndcg) }}</td>
+                        <td>
+                            {% if metrics.ndcg > 0.9 %}
+                                Excellent ranking quality
+                            {% elif metrics.ndcg > 0.7 %}
+                                Good ranking quality
+                            {% elif metrics.ndcg > 0.5 %}
+                                Moderate ranking quality
+                            {% else %}
+                                Needs improvement
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+
+                <h5 class="mt-4">Score Distribution</h5>
+                <table class="table table-bordered">
+                    <tr><td>Mean Score</td><td>{{ "%.3f"|format(metrics.score_distribution.mean) }}</td></tr>
+                    <tr><td>Standard Deviation</td><td>{{ "%.3f"|format(metrics.score_distribution.std) }}</td></tr>
+                    <tr><td>Range</td><td>{{ "%.3f"|format(metrics.score_distribution.range) }}</td></tr>
+                    <tr><td>Interquartile Range</td><td>{{ "%.3f"|format(metrics.score_distribution.iqr) }}</td></tr>
+                </table>
+                <p class="text-muted">
+                    {% if metrics.score_distribution.std < 0.1 %}
+                        Low variance - scores are tightly clustered
+                    {% elif metrics.score_distribution.std > 0.25 %}
+                        High variance - clear distinction
+                    {% else %}
+                        Moderate variance - fair separation
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <h5>Embedding Visualization</h5>
+                <img src="data:image/png;base64,{{ metrics.embedding_visualization }}" class="img-fluid" alt="t-SNE">
+                <small class="text-muted d-block mt-2">
+                    Red star = Job description; Green = Top matches; Gray = Others
+                </small>
+
+                <h5 class="mt-4">System Accuracy Assessment</h5>
+                <div class="alert 
+                    {% if (metrics.method_consistency + metrics.keyword_coverage + metrics.ndcg)/3 > 0.7 %}
+                        alert-success
+                    {% elif (metrics.method_consistency + metrics.keyword_coverage + metrics.ndcg)/3 > 0.5 %}
+                        alert-info
+                    {% else %}
+                        alert-warning
+                    {% endif %}">
+                    <strong>Overall:</strong>
+                    {% if (metrics.method_consistency + metrics.keyword_coverage + metrics.ndcg)/3 > 0.7 %}
+                        High performance and relevance.
+                    {% elif (metrics.method_consistency + metrics.keyword_coverage + metrics.ndcg)/3 > 0.5 %}
+                        Adequate but improvable.
+                    {% else %}
+                        Needs significant improvement.
+                    {% endif %}
+                </div>
+
+                <h6>Recommendations:</h6>
+                <ul class="text-start">
+                    {% if metrics.method_consistency < 0.6 %}
+                        <li>Improve consistency between ranking methods (TF-IDF vs embeddings)</li>
+                    {% endif %}
+                    {% if metrics.keyword_coverage < 0.5 %}
+                        <li>Enhance keyword extraction from job description</li>
+                    {% endif %}
+                    {% if metrics.ndcg < 0.6 %}
+                        <li>Improve ranking logic via better feature engineering</li>
+                    {% endif %}
+                    {% if metrics.perturbation_robustness < 0.5 %}
+                        <li>Use more robust embeddings to missing info</li>
+                    {% endif %}
+                    {% if metrics.score_distribution.std < 0.1 %}
+                        <li>Add more features to reduce score clustering</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
     <div class="footer">
         <p>&copy; 2025 ResumeRadar. All rights reserved.</p>
     </div>
