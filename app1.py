@@ -14,7 +14,7 @@ from pyresparser import ResumeParser
 from config import UPLOAD_FOLDER, TOP_N_RESULTS
 from file_validator import is_allowed_file, extract_text, is_resume
 from db_connection import create_table, insert_applicant_data, create_connection
-from config import UPLOAD_FOLDER, TOP_N_RESULTS
+from accuracy_evaluation import evaluate_ranking_accuracy, evaluate_and_render_accuracy_report
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -38,10 +38,19 @@ def dashboard():
         top_n = int(request.form.get('top_n', TOP_N_RESULTS))
 
         if not jd_text or not uploaded_files:
-            return render_template("dashboard.html", message="Job description and resumes are required.")
+            return render_template("newDashboard.html", message="Job description and resumes are required.")
 
-        top_resumes, file_errors = rank_resumes_from_input(jd_text, uploaded_files, top_n)
-        return render_template("dashboard.html", resumes=top_resumes, file_errors=file_errors)
+        top_resumes, file_errors, all_resume_texts = rank_resumes_from_input(jd_text, uploaded_files, top_n)
+
+        # Generate accuracy metrics directly (don't just return HTML)
+        metrics = None
+        if all_resume_texts:  # Only generate metrics if we have resumes
+            metrics = evaluate_ranking_accuracy(jd_text, all_resume_texts, top_n)    
+
+        return render_template("dashboard.html", 
+                              resumes=top_resumes, 
+                              file_errors=file_errors, 
+                              metrics=metrics)
 
     return render_template("dashboard.html")
 
@@ -89,7 +98,7 @@ def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
         metadata.append({'filename': filename, 'name': name, 'email': email, 'phone': phone})
 
     if not texts:
-        return [], file_errors
+        return [], file_errors, []
 
     # Compute similarities
     all_docs = [jd_text] + texts
@@ -114,7 +123,7 @@ def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
         results.append({**meta, 'similarity_score': score})
 
     results.sort(key=lambda x: x['similarity_score'], reverse=True)
-    return results[:top_n], file_errors
+    return results[:top_n], file_errors, texts
 
 
 @app.route('/view_resumes', methods=['GET'])
@@ -135,6 +144,32 @@ def view_resumes():
     total_pages = (total + per_page - 1) // per_page
 
     return render_template("view_resumes.html", resumes=resumes, page=page, total_pages=total_pages)
+
+
+@app.route('/evaluate_system', methods=['GET', 'POST'])
+def evaluate_system():
+    """Endpoint for standalone system evaluation"""
+    if request.method == 'POST':
+        jd_text = request.form.get('job_description')
+        uploaded_files = request.files.getlist('resumes')
+        top_n = int(request.form.get('top_n', TOP_N_RESULTS))
+        
+        if not jd_text or not uploaded_files:
+            return render_template("evaluate.html", message="Job description and resumes are required.")
+            
+        # Use existing function to process files
+        _, file_errors, all_resume_texts = rank_resumes_from_input(jd_text, uploaded_files, top_n)
+        
+        if not all_resume_texts:
+            return render_template("evaluate.html", message="No valid resumes found for evaluation.")
+            
+        # Get full evaluation metrics
+        metrics = evaluate_ranking_accuracy(jd_text, all_resume_texts, top_n)
+        
+        return render_template("evaluate.html", metrics=metrics, file_errors=file_errors)
+        
+    return render_template("evaluate.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
