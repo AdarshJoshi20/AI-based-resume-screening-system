@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 load_dotenv()
-
+import signal
+import sys
+import atexit
 import json
 from flask import Flask, request, render_template, jsonify
 import os
@@ -28,6 +30,30 @@ tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
 # Ensure DB table exists
 create_table()
 
+# Clean up function
+def cleanup_resources():
+    # Force cleanup of any Tkinter resources
+    try:
+        import tkinter as tk
+        if 'tk' in sys.modules:
+            if tk._default_root:
+                tk._default_root.destroy()
+    except:
+        pass
+    
+    print("Application shutting down...")
+
+# Register cleanup function
+atexit.register(cleanup_resources)
+
+# Handle SIGINT (Ctrl+C)
+def signal_handler(sig, frame):
+    print('Received SIGINT, shutting down gracefully...')
+    cleanup_resources()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
 # 🏠 Homepage + Dashboard
 @app.route('/', methods=['GET', 'POST'])
 def dashboard():
@@ -38,7 +64,7 @@ def dashboard():
         top_n = int(request.form.get('top_n', TOP_N_RESULTS))
 
         if not jd_text or not uploaded_files:
-            return render_template("newDashboard.html", message="Job description and resumes are required.")
+            return render_template("dashboard.html", message="Job description and resumes are required.")
 
         top_resumes, file_errors, all_resume_texts = rank_resumes_from_input(jd_text, uploaded_files, top_n)
 
@@ -118,7 +144,7 @@ def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
 
     results = []
     for meta, score in zip(metadata, combined_scores):
-        score = float(score)  # Convert from numpy float to Python float
+        score = float(score) * 100  # Convert from numpy float to Python float
         insert_applicant_data(meta['name'], meta['email'], meta['phone'], meta['filename'], score)
         results.append({**meta, 'similarity_score': score})
 
@@ -170,6 +196,10 @@ def evaluate_system():
         
     return render_template("evaluate.html")
 
+# ℹ️ About page
+@app.route('/about')
+def about():
+    return render_template("about1.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
