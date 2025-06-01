@@ -1,32 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Matched Resumes</title>
+    <title>View All Resumes - ResumeRadar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  </head>
-  
-  <body>
-    <div class="header"> ... </div>
-  
-    <div class="container">
-      {% if resumes %}
-        <table> ... </table>
-      {% else %}
-        <p style="text-align:center; font-size:1.2rem;">No resumes found.</p>
-      {% endif %}
-      <a href="/" class="btn-back">← Go Back</a>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+            <h1>ResumeRadar</h1>
+        </div>
+        <div>
+            <a href="/">Dashboard</a>
+            <a href="/about">About</a>
+        </div>
     </div>
-  
-    <div class="footer"> ... </div>
-  
+    
+    <div class="banner" style="background-image: url('{{ url_for('static', filename='images/banner.jpg') }}');">
+        <!-- Banner content -->
+    </div>
+
+    <div class="container">
+        <h2>All Submitted Resumes</h2>
+        
+        {% if resumes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Filename</th>
+                        <th>Similarity Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resume in resumes %}
+                    <tr>
+                        <td>{{ resume.name if resume.name else 'N/A' }}</td>
+                        <td>{{ resume.email if resume.email else 'N/A' }}</td>
+                        <td>{{ resume.phone if resume.phone else 'N/A' }}</td>
+                        <td>{{ resume.resume_file }}</td>
+                        <td>{{ "%.2f"|format(resume.similarity_score) }}%</td>
+                        <td>
+                            <a href="{{ url_for('static', filename='uploads/' + resume.resume_file) }}" target="_blank" class="btn-small">
+                                View Resume
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            {% if total_pages > 1 %}
+            <div class="pagination">
+                {% if page > 1 %}
+                    <a href="{{ url_for('view_resumes', page=page-1) }}" class="btn-pagination">← Previous</a>
+                {% endif %}
+                
+                <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+                
+                {% if page < total_pages %}
+                    <a href="{{ url_for('view_resumes', page=page+1) }}" class="btn-pagination">Next →</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="message">
+                <p style="text-align:center; font-size:1.2rem;">No resumes found in the database.</p>
+                <p style="text-align:center;">
+                    <a href="/" class="btn">Upload and Match Resumes</a>
+                </p>
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ResumeRadar. All rights reserved.</p>
+    </div>
+
     <script>
-      document.addEventListener('input', function (e) {
-        if (e.target.tagName.toLowerCase() === 'textarea') {
-          e.target.style.height = 'auto';
-          e.target.style.height = (e.target.scrollHeight) + 'px';
-        }
-      });
+        document.addEventListener('input', function (e) {
+            if (e.target.tagName.toLowerCase() === 'textarea') {
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+            }
+        });
     </script>
-  </body>
-  
+</body>
+</html>
