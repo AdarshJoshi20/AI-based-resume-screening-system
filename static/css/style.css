@@ -174,27 +174,50 @@ body {
   /* 📊 Table */
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    font-size: 1rem;
+    color: #fff;
   }
   
   th, td {
-    padding: 15px;
+    padding: 15px 20px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    background-color: #34495e; /* Softer dark for readability */
+    border-radius: 8px;
   }
   
   th {
-    background-color: #2c3e50;
+    background-color: #1f2d3d; /* Slightly deeper for header */
+    color: #f5f5dc;
+    font-weight: 700;
   }
   
-  tr:nth-child(even) {
-    background-color: #34495e;
+  /* tr:nth-child(even) {
+    background-color: #16213e;
   }
-  
-  tr:hover {
-    background-color: #8B4513;
+   */
+  /* tr:hover {
+    background-color: #00509e;
     color: #fff;
     transition: 0.3s ease;
+  } */
+  tr:hover td {
+    background-color: #2e86de; /* Hover effect */
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* 🟦 Link Styling in Table */
+  table a {
+    color: #f5f5dc; /* Match theme */
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  
+  table a:hover {
+    color: #ffd700; /* Gold on hover */
+    text-decoration: none;
   }
   
   /* ⚙️ Footer */
@@ -270,4 +293,64 @@ body {
     margin: 20px 0;
     color: #f5f5dc;
     min-height: 24px; /* ✅ ensures space is always there */
+}
+
+
+/* Additional styles for view_resumes.html */
+
+.btn-small {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.btn-small:hover {
+    background-color: #0056b3;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 15px;
+}
+
+.btn-pagination {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.btn-pagination:hover {
+    background-color: #0056b3;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Make table more responsive */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.9rem;
+    }
+    
+    table th,
+    table td {
+        padding: 8px 4px;
+    }
+    
+    .btn-small {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
 }
