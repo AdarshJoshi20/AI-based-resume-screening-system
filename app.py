@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 load_dotenv()
 
-# ✅ Debug prints to check if .env is being read
+#  Debug prints to check if .env is being read
 print("DB_USER:", os.environ.get("DB_USER"))
 print("DB_PASS:", os.environ.get("DB_PASS"))
 
@@ -26,7 +26,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 create_table()
 
 
-# 🧠 Extract data from resume
+# Extract data from resume
 def parse_resume_data(file_path):
     try:
         data = ResumeParser(file_path).get_extracted_data()
@@ -36,7 +36,7 @@ def parse_resume_data(file_path):
         return None
 
 
-# 🧠 Core Matching Logic
+#  Core Matching Logic
 def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
     jd_embedding = model.encode([jd_text])[0]
     results = []
@@ -47,7 +47,7 @@ def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
             file_errors.append({'filename': file.filename, 'error': "Unsupported file type."})
             continue
 
-        # ✅ New: Check file size manually
+        #  New: Check file size manually
         file.seek(0, os.SEEK_END)
         file_size = file.tell()
         file.seek(0)  # Reset pointer for saving
@@ -93,7 +93,7 @@ def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
 
 
 
-# 🏠 Homepage + Dashboard
+#  Homepage + Dashboard
 @app.route('/', methods=['GET', 'POST'])
 def dashboard():
     if request.method == 'POST':
@@ -111,7 +111,7 @@ def dashboard():
 
 
 
-# 📄 View matched resumes from DB
+#  View matched resumes from DB
 @app.route('/view_resumes')
 def view_resume():
     from db_connection import create_connection
@@ -125,16 +125,16 @@ def view_resume():
     return render_template("view_resumes.html", resumes=resumes)
 
 
-# ℹ️ About page
+#  About page
 @app.route('/about')
 def about():
     return render_template("about1.html")
 
 
-# 📛 Error handling
+# Error handling
 @app.errorhandler(413)
 def file_too_large(e):
-    return render_template("dashboard.html", message="❌ File too large. Max allowed size is 2 MB."), 413
+    return render_template("dashboard.html", message=" File too large. Max allowed size is 2 MB."), 413
 
 
 if __name__ == "__main__":
