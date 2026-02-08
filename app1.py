@@ -54,7 +54,7 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-# 🏠 Homepage + Dashboard
+#  Homepage + Dashboard
 @app.route('/', methods=['GET', 'POST'])
 def dashboard():
     if request.method == 'POST':
@@ -80,7 +80,7 @@ def dashboard():
 
     return render_template("dashboard.html")
 
-# 🧠 Core Matching Logic
+#  Core Matching Logic
 def rank_resumes_from_input(jd_text, uploaded_files, top_n=TOP_N_RESULTS):
     jd_text = jd_text.lower()
     jd_vector = model.encode([jd_text])[0]
@@ -196,7 +196,7 @@ def evaluate_system():
         
     return render_template("evaluate.html")
 
-# ℹ️ About page
+#  About page
 @app.route('/about')
 def about():
     return render_template("about1.html")
