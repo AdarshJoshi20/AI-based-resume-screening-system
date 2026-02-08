@@ -7,10 +7,10 @@ from sentence_transformers import util
 from model_loader import model
 from config import SIMILARITY_THRESHOLD, MIN_WORD_COUNT
 
-# ✅ Allowed file types
+#  Allowed file types
 ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.txt'}
 
-# ✅ Extract plain text from resume file
+#  Extract plain text from resume file
 def extract_text(file_path):
     ext = os.path.splitext(file_path)[1].lower()
     try:
@@ -34,12 +34,12 @@ def extract_text(file_path):
     
     return ""
 
-# ✅ Check if file type is allowed
+#  Check if file type is allowed
 def is_allowed_file(filename):
     ext = os.path.splitext(filename)[1].lower()
     return ext in ALLOWED_EXTENSIONS
 
-# ✅ Keyword match helper
+#  Keyword match helper
 def contains_resume_keywords(text):
     keywords = [
         "education", "project", "internship", "experience", "skills",
@@ -50,7 +50,7 @@ def contains_resume_keywords(text):
     text_lower = text.lower()
     return sum(1 for kw in keywords if kw in text_lower)
 
-# ✅ Cache reference resume vector
+#  Cache reference resume vector
 _reference_vector = None
 def get_reference_resume_vector(folder='reference_resumes'):
     global _reference_vector
@@ -72,7 +72,7 @@ def get_reference_resume_vector(folder='reference_resumes'):
     _reference_vector = torch.mean(torch.stack(vectors), dim=0)
     return _reference_vector
 
-# ✅ Validate if uploaded file is a resume
+#  Validate if uploaded file is a resume
 def is_resume(file_path):
     try:
         text = extract_text(file_path)
